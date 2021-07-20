@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import React,{useEffect, useState} from 'react'
+import InputField from './InputField'
+import ToDoItem from './ToDoItem'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const App = () => {
+   
+
+const [value,setValue]=useState([])
+
+useEffect(()=>{
+    const items = localStorage.getItem("items")
+    setValue(JSON.parse(items))
+},[])
+
+const add = (text)=>{
+    setValue((current)=>{
+    
+    localStorage.setItem('items',JSON.stringify([...current,text]))
+     return [...current,text];
+    });
 }
 
-export default App;
+const deleteItem = (id)=>{
+    setValue((current)=>{
+        let temp =  current.filter((item,index)=>{
+            return index!==id;
+        })
+        localStorage.setItem('items',JSON.stringify(temp))
+        return temp
+    })
+    
+}
+
+
+    return (
+        <div className='container'>
+            <InputField add={add} />
+            <div>
+                <ul>
+                    {value.map((data,index)=>{
+                        return <ToDoItem key={index} index={index} data={data} onClick={()=>deleteItem(index)}/>
+                    })}
+                </ul>
+            </div>
+        </div>
+    )
+}
+
+export default App
+
