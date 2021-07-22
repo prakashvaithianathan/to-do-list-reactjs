@@ -9,6 +9,9 @@ const [value,setValue]=useState([])
 
 useEffect(()=>{
     const items = localStorage.getItem("items")
+    if(!items){
+        return value
+    }
     setValue(JSON.parse(items))
 },[])
 
